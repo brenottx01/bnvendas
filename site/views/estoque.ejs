@@ -1,0 +1,31 @@
+<%- include('partials/cabecalho') %>
+
+<div class="cabecalho-pagina">
+    <div><h1>Estoque</h1><p>Quantidade agregada por produto e servidor.</p></div>
+    <span class="selo"><%= linhas.length %> grupos</span>
+</div>
+
+<section class="painel">
+    <% if (linhas.length === 0) { %>
+        <p class="vazio">Nenhum item no estoque.</p>
+    <% } else { %>
+        <div class="tabela-envolve">
+            <table>
+                <thead><tr><th>Produto</th><th>Servidor</th><th>Itens</th><th>Mais antigo</th><th>Mais recente</th></tr></thead>
+                <tbody>
+                    <% linhas.forEach((linha) => { %>
+                        <tr>
+                            <td class="forte"><%= linha.produto ? linha.produto.nome : ('Produto #' + linha.produtoId) %></td>
+                            <td><%= linha.servidor %></td>
+                            <td><span class="badge badge-ok"><%= linha.total %></span></td>
+                            <td><%= formatarData(linha.maisAntigo) %></td>
+                            <td><%= formatarData(linha.maisRecente) %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</section>
+
+<%- include('partials/rodape') %>

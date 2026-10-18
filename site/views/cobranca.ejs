@@ -1,0 +1,52 @@
+<%- include('partials/cabecalho') %>
+
+<div class="cabecalho-pagina">
+    <div>
+        <h1>Pagamento PIX</h1>
+        <p>Cobranca #<%= cobranca._id %></p>
+    </div>
+    <span class="badge <%= cobranca.status === 'confirmado' ? 'badge-ok' : (cobranca.status === 'cancelado' ? 'badge-erro' : 'badge-alerta') %>">
+        <%= cobranca.status %>
+    </span>
+</div>
+
+<% if (cobranca.status === 'confirmado') { %>
+    <div class="alerta alerta-ok">Pagamento confirmado por <%= cobranca.confirmadoPor %>.</div>
+<% } else if (cobranca.status === 'cancelado') { %>
+    <div class="alerta alerta-erro">Esta cobranca foi cancelada.</div>
+<% } else { %>
+    <div class="alerta alerta-alerta">Aguardando confirmacao do recebimento pelo administrador.</div>
+<% } %>
+
+<section class="grade-duas">
+    <article class="painel centro">
+        <% if (cobranca.status === 'pendente' && cobranca.qrCode) { %>
+            <img class="qr-pix" src="<%= cobranca.qrCode %>" alt="QR Code PIX">
+            <p class="subtitulo">Escaneie o QR Code ou use o codigo copia e cola:</p>
+            <textarea class="pix-copia" readonly rows="4"><%= cobranca.payloadPix %></textarea>
+            <button type="button" class="botao botao-suave" data-copiar="<%= cobranca.payloadPix %>">Copiar codigo PIX</button>
+        <% } else { %>
+            <p class="vazio">QR Code indisponivel para cobrancas ja finalizadas.</p>
+        <% } %>
+    </article>
+
+    <article class="painel">
+        <h2>Resumo</h2>
+        <ul class="lista-itens">
+            <% cobranca.itens.forEach((item) => { %>
+                <li><span><%= item.nome %></span><strong><%= formatarMoeda(item.valorPago) %></strong></li>
+            <% }) %>
+        </ul>
+        <div class="resumo-total">
+            <div><span>Subtotal</span><span><%= formatarMoeda(cobranca.valorOriginal) %></span></div>
+            <% if (cobranca.desconto > 0) { %>
+                <div class="linha-desconto"><span>Desconto</span><span>-<%= formatarMoeda(cobranca.desconto) %></span></div>
+            <% } %>
+            <div class="linha-total"><span>Total no PIX</span><span><%= formatarMoeda(cobranca.valorFinal) %></span></div>
+        </div>
+        <p class="ajuda">TXID: <%= cobranca.txid %></p>
+        <a class="botao botao-suave botao-largo" href="/minhas-cobrancas">Minhas cobrancas</a>
+    </article>
+</section>
+
+<%- include('partials/rodape') %>

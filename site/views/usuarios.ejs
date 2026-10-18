@@ -1,0 +1,53 @@
+<%- include('partials/cabecalho') %>
+
+<div class="cabecalho-pagina">
+    <div><h1>Usuarios</h1><p>Contas cadastradas no site.</p></div>
+    <a class="botao botao-suave" href="/admin">Voltar</a>
+</div>
+
+<section class="painel">
+    <% if (usuarios.length === 0) { %>
+        <p class="vazio">Nenhum usuario cadastrado.</p>
+    <% } else { %>
+        <div class="tabela-envolve">
+            <table>
+                <thead>
+                    <tr><th>Usuario</th><th>Status</th><th>Permissao</th><th>Criado em</th><th>Ultimo acesso</th><th>Acoes</th></tr>
+                </thead>
+                <tbody>
+                    <% usuarios.forEach((item) => { %>
+                        <tr>
+                            <td class="forte">
+                                <%= item.usuario %>
+                                <% if (item._id.toString() === usuario._id.toString()) { %><span class="badge badge-admin">Voce</span><% } %>
+                            </td>
+                            <td><span class="badge <%= item.ativo ? 'badge-ok' : 'badge-erro' %>"><%= item.ativo ? 'Ativo' : 'Inativo' %></span></td>
+                            <td><span class="badge <%= item.papel === 'admin' ? 'badge-admin' : 'badge-neutro' %>"><%= item.papel === 'admin' ? 'Admin' : 'Usuario' %></span></td>
+                            <td><%= formatarData(item.criadoEm) %></td>
+                            <td><%= formatarData(item.ultimoLogin) %></td>
+                            <td>
+                                <div class="acoes">
+                                    <form method="post" action="/admin/usuarios/<%= item._id %>/papel">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                        <select name="papel" aria-label="Permissao de <%= item.usuario %>">
+                                            <option value="user" <%= item.papel === 'user' ? 'selected' : '' %>>Usuario</option>
+                                            <option value="admin" <%= item.papel === 'admin' ? 'selected' : '' %>>Admin</option>
+                                        </select>
+                                        <button type="submit" class="botao botao-mini">Salvar</button>
+                                    </form>
+                                    <form method="post" action="/admin/usuarios/<%= item._id %>/ativo" data-confirmar="<%= item.ativo ? 'Desativar' : 'Ativar' %> esta conta?">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                        <button type="submit" class="botao botao-mini <%= item.ativo ? 'botao-perigo' : 'botao-primario' %>"><%= item.ativo ? 'Desativar' : 'Ativar' %></button>
+                                    </form>
+                                    <a class="botao botao-mini botao-suave" href="/admin/usuarios/<%= item._id %>/senha">Senha</a>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</section>
+
+<%- include('partials/rodape') %>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title><%= typeof titulo !== 'undefined' ? titulo + ' | ' + appName : appName %></title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+<% if (usuario) { %>
+    <header class="topbar">
+        <a class="marca" href="/painel">
+            <span class="marca-icone">V</span>
+            <span><%= appName %></span>
+        </a>
+        <nav class="menu">
+            <a href="/painel" class="<%= titulo === 'Painel' ? 'ativo' : '' %>">Painel</a>
+            <a href="/produtos" class="<%= titulo === 'Produtos' ? 'ativo' : '' %>">Produtos</a>
+            <a href="/checkout" class="<%= titulo === 'Checkout PIX' ? 'ativo' : '' %>">Checkout</a>
+            <a href="/minhas-cobrancas" class="<%= titulo === 'Minhas cobrancas' ? 'ativo' : '' %>">Cobranças</a>
+            <% if (usuario.papel === 'admin') { %>
+                <a href="/vendas" class="<%= titulo === 'Vendas' ? 'ativo' : '' %>">Vendas</a>
+                <a href="/estoque" class="<%= titulo === 'Estoque' ? 'ativo' : '' %>">Estoque</a>
+                <a href="/carrinhos" class="<%= titulo === 'Carrinhos' ? 'ativo' : '' %>">Carrinhos</a>
+                <a href="/admin" class="<%= titulo === 'Administracao' ? 'ativo' : '' %>">Admin</a>
+                <a href="/admin/pagamentos" class="<%= titulo === 'Pagamentos' ? 'ativo' : '' %>">PIX</a>
+            <% } %>
+            <form method="post" action="/sair" class="form-sair">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="botao botao-suave">Sair</button>
+            </form>
+            <span class="usuario-chip" title="<%= usuario.usuario %>"><%= usuario.usuario.slice(0, 2).toUpperCase() %></span>
+        </nav>
+    </header>
+<% } %>
+
+<main class="<%= usuario ? 'conteudo' : 'conteudo centralizado' %>">
+    <%- include('mensagens') %>

@@ -1,0 +1,88 @@
+<%- include('partials/cabecalho') %>
+
+<div class="cabecalho-pagina">
+    <div>
+        <h1>Ola, <%= usuario.usuario %></h1>
+        <p>Resumo dos dados do sistema de vendas.</p>
+    </div>
+    <span class="selo">Conta <%= usuario.papel === 'admin' ? 'administrador' : 'ativa' %></span>
+</div>
+
+<section class="grade-metricas">
+    <% if (ehAdmin) { %>
+        <article class="metrica">
+            <span class="metrica-icone purple">U</span>
+            <div><strong><%= metricas.usuariosAtivos %></strong><small>Usuarios ativos</small></div>
+        </article>
+    <% } %>
+    <article class="metrica">
+        <span class="metrica-icone blue">P</span>
+        <div><strong><%= metricas.totalProdutos %></strong><small>Produtos cadastrados</small></div>
+    </article>
+    <% if (ehAdmin) { %>
+        <article class="metrica">
+            <span class="metrica-icone green">V</span>
+            <div><strong><%= metricas.totalVendas %></strong><small>Vendas confirmadas</small></div>
+        </article>
+        <article class="metrica">
+            <span class="metrica-icone orange">R</span>
+            <div><strong><%= formatarMoeda(metricas.receita) %></strong><small>Receita total</small></div>
+        </article>
+    <% } else { %>
+        <article class="metrica">
+            <span class="metrica-icone green">C</span>
+            <div><strong>Ativa</strong><small>Sua conta esta habilitada</small></div>
+        </article>
+    <% } %>
+</section>
+
+<section class="grade-duas">
+    <% if (ehAdmin) { %>
+        <article class="painel">
+            <div class="painel-topo">
+                <h2>Vendas recentes</h2>
+                <a href="/vendas">Ver todas</a>
+            </div>
+            <% if (vendasRecentes.length === 0) { %>
+                <p class="vazio">Nenhuma venda registrada.</p>
+            <% } else { %>
+                <div class="tabela-envolve">
+                    <table>
+                        <thead><tr><th>ID</th><th>Usuario Discord</th><th>Itens</th><th>Valor</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <% vendasRecentes.forEach((venda) => { %>
+                                <tr>
+                                    <td>#<%= venda._id %></td>
+                                    <td><%= venda.user_id %></td>
+                                    <td><%= venda.quantidade_produtos_vendidos %></td>
+                                    <td><%= formatarMoeda(venda.valor) %></td>
+                                    <td><span class="badge <%= venda.pagamento_confirmado ? 'badge-ok' : 'badge-alerta' %>"><%= venda.pagamento_confirmado ? 'Confirmado' : 'Pendente' %></span></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </article>
+    <% } else { %>
+        <article class="painel">
+            <h2>Bem-vindo</h2>
+            <p class="vazio">Sua conta foi criada com sucesso e ja pode acompanhar os produtos do servidor.</p>
+        </article>
+    <% } %>
+
+    <article class="painel">
+        <h2>Atalhos</h2>
+        <div class="atalhos">
+            <a href="/produtos"><span>Produtos</span><small>Precos e estoque</small></a>
+            <% if (ehAdmin) { %>
+                <a href="/vendas"><span>Vendas</span><small>Historico de pagamentos</small></a>
+                <a href="/estoque"><span>Estoque</span><small><%= metricas.carrinhosAbertos %> carrinhos ativos</small></a>
+                <a href="/carrinhos"><span>Carrinhos</span><small>Compras em andamento</small></a>
+                <a href="/admin"><span>Administracao</span><small>Usuarios e permissoes</small></a>
+            <% } %>
+        </div>
+    </article>
+</section>
+
+<%- include('partials/rodape') %>

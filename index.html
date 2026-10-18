@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel de Vendas | Demonstração</title>
+<style>
+:root{
+  --fundo:#0b0d12;--fundo-2:#11141c;--painel:#151925;--painel-2:#1b2030;--borda:#262c3d;
+  --texto:#eef1f7;--texto-2:#98a1b5;--primaria:#7c5cff;--primaria-2:#9d86ff;
+  --verde:#2fd18f;--vermelho:#ff5c74;--amarelo:#ffbe4d;--sombra:0 18px 50px rgba(0,0,0,.35);--raio:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:radial-gradient(circle at 10% 0%,rgba(124,92,255,.14),transparent 32rem),radial-gradient(circle at 90% 10%,rgba(47,209,143,.08),transparent 28rem),var(--fundo);color:var(--texto);font-family:"Segoe UI",Inter,system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.5}
+a{color:var(--primaria-2);text-decoration:none}
+h1,h2{margin:0;letter-spacing:-.02em}
+h1{font-size:clamp(1.6rem,3vw,2.2rem)}
+h2{font-size:1.05rem}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.aviso-demo{position:sticky;top:0;z-index:40;background:linear-gradient(90deg,#7c5cff,#4d8dff);color:#fff;text-align:center;padding:8px 14px;font-size:.85rem;font-weight:700}
+.topbar{position:sticky;top:32px;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px clamp(14px,4vw,42px);background:rgba(11,13,18,.9);border-bottom:1px solid var(--borda);backdrop-filter:blur(14px);flex-wrap:wrap}
+.marca{display:flex;align-items:center;gap:10px;color:var(--texto);font-weight:700}
+.marca-icone,.logo-grande{display:grid;place-items:center;background:linear-gradient(135deg,var(--primaria),#4d8dff);color:#fff;font-weight:800;box-shadow:0 8px 24px rgba(124,92,255,.32)}
+.marca-icone{width:34px;height:34px;border-radius:10px}
+.logo-grande{width:58px;height:58px;border-radius:18px;margin:0 auto 14px;font-size:1.6rem}
+.menu{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.menu button{background:none;border:0;color:var(--texto-2);font:inherit;font-weight:600;padding:8px 12px;border-radius:10px;cursor:pointer}
+.menu button:hover,.menu button.ativo{color:var(--texto);background:var(--painel-2)}
+.chip-rol{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(124,92,255,.14);color:var(--primaria-2);font-size:.78rem;font-weight:700}
+.conteudo{width:min(1400px,calc(100% - 32px));margin:0 auto;padding:34px 0 60px}
+.conteudo.centralizado{min-height:calc(100vh - 140px);display:grid;place-items:center}
+.cabecalho-pagina{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.cabecalho-pagina p{margin:6px 0 0;color:var(--texto-2)}
+.selo{padding:7px 11px;border-radius:999px;background:rgba(47,209,143,.1);border:1px solid rgba(47,209,143,.22);color:var(--verde);font-size:.8rem;font-weight:700}
+.cartao-auth{width:min(460px,100%);padding:34px;background:linear-gradient(180deg,rgba(27,32,48,.95),rgba(17,20,28,.95));border:1px solid var(--borda);border-radius:22px;box-shadow:var(--sombra);text-align:center}
+.cartao-auth h1{font-size:1.55rem}
+.subtitulo{margin:8px 0 24px;color:var(--texto-2)}
+.alternativa{margin:20px 0 0;color:var(--texto-2);font-size:.9rem}
+.formulario{display:grid;gap:10px;text-align:left}
+.formulario label{margin-top:6px;font-size:.85rem;font-weight:700;color:var(--texto-2)}
+input,select,textarea{width:100%;padding:12px 13px;border-radius:11px;border:1px solid var(--borda);background:#0e1119;color:var(--texto);outline:none;font:inherit}
+input:focus,select:focus{border-color:var(--primaria);box-shadow:0 0 0 3px rgba(124,92,255,.14)}
+.campo-senha{position:relative}
+.campo-senha input{padding-right:60px}
+.ver-senha{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:var(--painel-2);color:var(--texto-2);border-radius:8px;padding:6px 8px;cursor:pointer;font-size:.75rem}
+.botao{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 15px;border:1px solid transparent;border-radius:11px;font:inherit;font-weight:700;cursor:pointer;transition:transform .15s,filter .15s}
+.botao:hover{transform:translateY(-1px);filter:brightness(1.08);color:#fff}
+.botao-primario{background:linear-gradient(135deg,var(--primaria),#5b6dff);color:#fff}
+.botao-suave{background:var(--painel-2);border-color:var(--borda);color:var(--texto)}
+.botao-perigo{background:rgba(255,92,116,.12);border-color:rgba(255,92,116,.28);color:#ff93a5}
+.botao-largo{width:100%;margin-top:10px;padding:12px}
+.botao-mini{padding:7px 10px;font-size:.78rem}
+.alerta{padding:12px 14px;border-radius:11px;margin-bottom:16px;font-size:.9rem}
+.alerta-erro{background:rgba(255,92,116,.1);border:1px solid rgba(255,92,116,.26);color:#ff9aa9}
+.alerta-ok{background:rgba(47,209,143,.1);border:1px solid rgba(47,209,143,.26);color:#7ce9bd}
+.alerta-alerta{background:rgba(255,190,77,.1);border:1px solid rgba(255,190,77,.26);color:#ffd483}
+.grade-metricas{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:20px}
+.metrica{display:flex;align-items:center;gap:14px;padding:18px;background:var(--painel);border:1px solid var(--borda);border-radius:var(--raio)}
+.metrica strong{display:block;font-size:1.4rem}
+.metrica small{color:var(--texto-2)}
+.metrica-icone{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;font-weight:800}
+.m-purple{background:rgba(124,92,255,.16);color:#b6a6ff}
+.m-blue{background:rgba(77,141,255,.16);color:#8db6ff}
+.m-green{background:rgba(47,209,143,.14);color:#74e6b8}
+.m-orange{background:rgba(255,190,77,.14);color:#ffd483}
+.grade-duas{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:18px}
+.painel{background:var(--painel);border:1px solid var(--borda);border-radius:var(--raio);padding:20px;margin-bottom:18px}
+.painel.centro{text-align:center}
+.painel-topo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.tabela-envolve{overflow-x:auto;margin:0 -6px}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{text-align:left;color:var(--texto-2);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;padding:10px;border-bottom:1px solid var(--borda);white-space:nowrap}
+td{padding:12px 10px;border-bottom:1px solid rgba(38,44,61,.6);vertical-align:middle}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+.forte{font-weight:700}
+.badge{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:.74rem;font-weight:700;white-space:nowrap}
+.badge-ok{background:rgba(47,209,143,.12);color:#74e6b8}
+.badge-erro{background:rgba(255,92,116,.12);color:#ff9aab}
+.badge-alerta{background:rgba(255,190,77,.13);color:#ffd483}
+.badge-admin{background:rgba(124,92,255,.15);color:#bcaeff;margin-left:6px}
+.badge-neutro{background:rgba(152,161,181,.12);color:#b7bfd0}
+.vazio{padding:28px;text-align:center;color:var(--texto-2)}
+.atalhos{display:grid;gap:9px;margin-top:14px}
+.atalhos button{display:flex;justify-content:space-between;gap:12px;padding:12px;border-radius:11px;background:var(--painel-2);color:var(--texto);border:0;font:inherit;cursor:pointer;text-align:left}
+.atalhos small{color:var(--texto-2)}
+.lista-itens{list-style:none;margin:14px 0 0;padding:0}
+.lista-itens li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid rgba(38,44,61,.6)}
+.resumo-total{margin-top:16px;padding-top:12px;border-top:1px solid var(--borda)}
+.resumo-total div{display:flex;justify-content:space-between;padding:4px 0;color:var(--texto-2)}
+.resumo-total .desconto{color:var(--verde)}
+.resumo-total .total{color:var(--texto);font-size:1.15rem;font-weight:800;margin-top:6px;padding-top:10px;border-top:1px solid var(--borda)}
+.qr-demo{width:280px;max-width:100%;height:280px;margin:0 auto;background:#fff;border-radius:14px;padding:10px;display:grid;place-items:center;color:#111;font-size:.8rem;font-weight:700;text-align:center}
+.pix-copia{width:100%;margin:10px 0;padding:10px;border-radius:10px;border:1px solid var(--borda);background:#0e1119;color:var(--texto-2);font-family:ui-monospace,Consolas,monospace;font-size:.72rem;word-break:break-all}
+.preco-riscado{text-decoration:line-through;color:var(--texto-2)}
+.preco-final{color:var(--verde)}
+.grade-campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:14px}
+.grade-campos label{display:block;margin-bottom:6px;color:var(--texto-2);font-size:.85rem;font-weight:700}
+.checks{display:flex;gap:18px;flex-wrap:wrap;margin:16px 0}
+.check{display:inline-flex;align-items:center;gap:8px;color:var(--texto-2);font-size:.9rem}
+.check input{width:16px;height:16px;accent-color:var(--primaria)}
+.acoes{display:flex;gap:6px;flex-wrap:wrap}
+.oculto{display:none!important}
+.rodape{width:min(1400px,calc(100% - 32px));margin:0 auto;padding:20px 0 30px;display:flex;justify-content:space-between;color:var(--texto-2);font-size:.8rem;flex-wrap:wrap;gap:6px}
+@media(max-width:900px){.grade-duas{grid-template-columns:1fr}}
+@media(max-width:560px){.conteudo{width:min(100% - 22px,1400px);padding-top:22px}.cartao-auth{padding:24px 18px}}
+</style>
+</head>
+<body>
+
+<div class="aviso-demo">DEMONSTRAÇÃO VISUAL — arquivo HTML único, sem servidor. Login, banco de dados e PIX real exigem a versão Node.js + MongoDB.</div>
+
+<!-- LOGIN -->
+<section id="tela-login" class="conteudo centralizado">
+  <div class="cartao-auth">
+    <div class="logo-grande">V</div>
+    <h1>Entrar na sua conta</h1>
+    <p class="subtitulo">Acesse produtos, vendas e o painel administrativo.</p>
+    <div id="login-erro" class="alerta alerta-erro oculto"></div>
+    <form id="form-login" class="formulario" autocomplete="off">
+      <label for="login-usuario">Usuario</label>
+      <input id="login-usuario" type="text" placeholder="dono ou cliente" required>
+      <label for="login-senha">Senha</label>
+      <div class="campo-senha">
+        <input id="login-senha" type="password" placeholder="qualquer senha" required>
+        <button type="button" class="ver-senha" data-alvo="login-senha">ver</button>
+      </div>
+      <button type="submit" class="botao botao-primario botao-largo">Entrar</button>
+    </form>
+    <p class="alternativa">Nao tem conta? <a href="#" id="ir-cadastro">Criar conta</a></p>
+    <p class="alternativa" style="font-size:.8rem;color:#6f7789">
+      Dica: use <strong>dono</strong> para ver como administrador.
+    </p>
+  </div>
+</section>
+
+<!-- CADASTRO -->
+<section id="tela-cadastro" class="conteudo centralizado oculto">
+  <div class="cartao-auth">
+    <div class="logo-grande">V</div>
+    <h1>Criar conta</h1>
+    <p class="subtitulo">Seu cadastro tera acesso ao painel de vendas.</p>
+    <div id="cadastro-erro" class="alerta alerta-erro oculto"></div>
+    <form id="form-cadastro" class="formulario" autocomplete="off">
+      <label for="cad-usuario">Usuario</label>
+      <input id="cad-usuario" type="text" minlength="3" required placeholder="seu.usuario">
+      <label for="cad-senha">Senha</label>
+      <div class="campo-senha">
+        <input id="cad-senha" type="password" minlength="6" required placeholder="Minimo de 6 caracteres">
+        <button type="button" class="ver-senha" data-alvo="cad-senha">ver</button>
+      </div>
+      <button type="submit" class="botao botao-primario botao-largo">Criar conta</button>
+    </form>
+    <p class="alternativa">Ja tem conta? <a href="#" id="ir-login">Entrar</a></p>
+  </div>
+</section>
+
+<!-- APP -->
+<div id="app" class="oculto">
+  <header class="topbar">
+    <span class="marca"><span class="marca-icone">V</span> Painel de Vendas</span>
+    <nav class="menu" id="menu"></nav>
+  </header>
+
+  <main class="conteudo">
+    <!-- PAINEL -->
+    <section id="tela-painel">
+      <div class="cabecalho-pagina">
+        <div><h1 id="painel-saudacao">Ola</h1><p>Resumo dos dados do sistema de vendas.</p></div>
+        <span class="chip-rol" id="painel-papel">usuario</span>
+      </div>
+      <div class="grade-metricas" id="painel-metricas"></div>
+      <div class="grade-duas">
+        <div class="painel">
+          <div class="painel-topo"><h2>Vendas recentes</h2></div>
+          <div class="tabela-envolve"><table id="tabela-vendas"></table></div>
+        </div>
+        <div class="painel">
+          <h2>Atalhos</h2>
+          <div class="atalhos" id="atalhos"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUTOS -->
+    <section id="tela-produtos" class="oculto">
+      <div class="cabecalho-pagina"><div><h1>Produtos</h1><p>Produtos cadastrados pelo bot no Discord.</p></div></div>
+      <div class="painel"><div class="tabela-envolve"><table id="tabela-produtos"></table></div></div>
+    </section>
+
+    <!-- CHECKOUT -->
+    <section id="tela-checkout" class="oculto">
+      <div class="cabecalho-pagina">
+        <div><h1>Checkout PIX</h1><p>Selecione os produtos e gere o pagamento.</p></div>
+        <span class="selo" id="checkout-selo">Desconto 10%</span>
+      </div>
+      <div id="checkout-aviso"></div>
+      <div class="painel">
+        <div class="tabela-envolve"><table id="tabela-checkout"></table></div>
+        <button id="btn-gerar-pix" class="botao botao-primario" style="margin-top:16px">Gerar PIX</button>
+      </div>
+    </section>
+
+    <!-- COBRANCA -->
+    <section id="tela-cobranca" class="oculto">
+      <div class="cabecalho-pagina">
+        <div><h1>Pagamento PIX</h1><p id="cobranca-sub"></p></div>
+        <span class="badge badge-alerta" id="cobranca-status">pendente</span>
+      </div>
+      <div class="alerta alerta-alerta">Aguardando confirmacao do recebimento pelo administrador. (demonstracao)</div>
+      <div class="grade-duas">
+        <div class="painel centro">
+          <div class="qr-demo">QR Code PIX<br>(demonstracao)</div>
+          <p class="subtitulo">Escaneie o QR Code ou use o codigo copia e cola:</p>
+          <textarea class="pix-copia" id="pix-copia" rows="4" readonly></textarea>
+          <button class="botao botao-suave" id="copiar-pix">Copiar codigo PIX</button>
+        </div>
+        <div class="painel">
+          <h2>Resumo</h2>
+          <ul class="lista-itens" id="cobranca-itens"></ul>
+          <div class="resumo-total" id="cobranca-resumo"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COBRANCAS -->
+    <section id="tela-cobrancas" class="oculto">
+      <div class="cabecalho-pagina">
+        <div><h1>Minhas cobrancas</h1><p>Historico de pagamentos PIX.</p></div>
+        <button class="botao botao-primario" data-ir="checkout">Nova compra</button>
+      </div>
+      <div class="painel"><div class="tabela-envolve"><table id="tabela-cobrancas"></table></div></div>
+    </section>
+
+    <!-- ADMIN PIX -->
+    <section id="tela-admin-pix" class="oculto">
+      <div class="cabecalho-pagina">
+        <div><h1>Pagamentos PIX</h1><p>Sua chave, comissao e confirmacao de recebimento.</p></div>
+      </div>
+      <div class="grade-metricas" id="pix-metricas"></div>
+      <div class="painel">
+        <h2>Sua chave PIX</h2>
+        <p style="color:var(--texto-2);font-size:.85rem">Somente voce (admin) ve e altera esta area.</p>
+        <div class="grade-campos">
+          <div><label for="cfg-chave">Chave PIX</label><input id="cfg-chave" placeholder="CPF/CNPJ, e-mail, telefone ou chave aleatoria"></div>
+          <div><label for="cfg-nome">Nome do recebedor</label><input id="cfg-nome" placeholder="SEU NOME"></div>
+          <div><label for="cfg-cidade">Cidade</label><input id="cfg-cidade" placeholder="SAO PAULO"></div>
+          <div><label for="cfg-desconto">Desconto (%)</label><input id="cfg-desconto" type="number" min="0" max="100" step="0.01"></div>
+          <div><label for="cfg-comissao">Sua comissao (%)</label><input id="cfg-comissao" type="number" min="0" max="100" step="0.01"></div>
+        </div>
+        <div class="checks">
+          <label class="check"><input type="checkbox" id="cfg-ativo"> Desconto ativo</label>
+          <label class="check"><input type="checkbox" id="cfg-admin-cheio"> Admin paga o valor cheio</label>
+        </div>
+        <button class="botao botao-primario" id="salvar-cfg">Salvar configuracao</button>
+      </div>
+      <div class="painel">
+        <h2>Cobrancas</h2>
+        <div class="tabela-envolve"><table id="tabela-admin-cobrancas"></table></div>
+      </div>
+    </section>
+
+    <!-- ADMIN USUARIOS -->
+    <section id="tela-admin-usuarios" class="oculto">
+      <div class="cabecalho-pagina"><div><h1>Usuarios</h1><p>Contas cadastradas no site.</p></div></div>
+      <div class="painel"><div class="tabela-envolve"><table id="tabela-usuarios"></table></div></div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <span>Painel de Vendas (demonstracao)</span>
+    <span>Integração Discord + MongoDB</span>
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+/* =================== DADOS DE EXEMPLO =================== */
+var produtos = [
+  { id: 1, nome: 'AK Prime',      valor: 49.90,  quantidade: 12 },
+  { id: 2, nome: 'Alok Emote',    valor: 19.90,  quantidade: 40 },
+  { id: 3, nome: 'Bundle Ninja',  valor: 129.90, quantidade: 3 },
+  { id: 4, nome: 'Capa Galáctica', valor: 89.90, quantidade: 0 },
+  { id: 5, nome: 'Emote Lava',    valor: 24.90,  quantidade: 27 }
+];
+
+var vendas = [
+  { id: 2000000002, user: '778899002', itens: 1, valor: 49.90, status: false },
+  { id: 2000000001, user: '778899001', itens: 2, valor: 99.80, status: true  }
+];
+
+var usuarios = [
+  { id: 1, usuario: 'dono',        papel: 'admin', ativo: true },
+  { id: 2, usuario: 'cliente',     papel: 'user',  ativo: true },
+  { id: 3, usuario: 'cliente_two', papel: 'user',  ativo: false }
+];
+
+var config = {
+  chavePix: 'pix-exemplo-teste-123',
+  nomeRecebedor: 'LOJA EXEMPLO',
+  cidade: 'SAO PAULO',
+  descontoPercentual: 10,
+  comissaoPercentual: 10,
+  descontoAtivo: true,
+  adminPagaValorCheio: true
+};
+
+var cobrancas = [
+  { id: 1, usuario: 'cliente', ehAdmin: false, status: 'pendente',
+    itens: [{ nome: 'AK Prime', valorOriginal: 49.90, valorPago: 44.91 }],
+    valorOriginal: 49.90, desconto: 4.99, comissao: 4.99, valorFinal: 44.91 }
+];
+
+/* =================== ESTADO =================== */
+var sessao = null;
+var telaAtual = 'painel';
+
+/* =================== UTILIDADES =================== */
+function moeda(v){ return (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+function $(id){ return document.getElementById(id); }
+function mostrar(id){ ['tela-login','tela-cadastro'].forEach(function(t){ $(t).classList.toggle('oculto', t!==id); }); }
+function mostrarApp(v){ $('app').classList.toggle('oculto', !v); mostrar(v ? null : 'tela-login'); }
+
+function preco(valor, ehAdmin){
+  var usaDesconto = config.descontoAtivo && (!ehAdmin || !config.adminPagaValorCheio);
+  var d = usaDesconto ? valor * config.descontoPercentual / 100 : 0;
+  return { original: valor, desconto: d, final: Math.max(0, valor - d) };
+}
+
+function crc16(payload){
+  var crc = 0xFFFF;
+  for (var i=0;i<payload.length;i++){
+    crc ^= payload.charCodeAt(i) << 8;
+    for (var b=0;b<8;b++){ crc = (crc & 0x8000) ? ((crc<<1)^0x1021) : (crc<<1); crc &= 0xFFFF; }
+  }
+  return crc.toString(16).toUpperCase().padStart(4,'0');
+}
+function campo(id, valor){ var t=String(valor); return id + String(t.length).padStart(2,'0') + t; }
+function gerarPayloadPix(chave, valor, nome, cidade, txid){
+  var ma = campo('00','br.gov.bcb.pix') + campo('01', chave);
+  var p = campo('00','01') + campo('26',ma) + campo('52','0000') + campo('53','986');
+  if (valor > 0) p += campo('54', valor.toFixed(2));
+  p += campo('58','BR') + campo('59',(nome||'RECEBEDOR').toUpperCase().slice(0,25)) + campo('60',(cidade||'SAO PAULO').toUpperCase().slice(0,15));
+  p += campo('62', campo('05', txid)) + '6304';
+  return p + crc16(p);
+}
+
+/* =================== NAVEGACAO =================== */
+var menus = [
+  { id:'painel',         rotulo:'Painel',    admin:false },
+  { id:'produtos',       rotulo:'Produtos',  admin:false },
+  { id:'checkout',       rotulo:'Checkout',  admin:false },
+  { id:'cobrancas',      rotulo:'Cobrancas', admin:false },
+  { id:'admin-pix',      rotulo:'PIX',       admin:true  },
+  { id:'admin-usuarios', rotulo:'Usuarios',  admin:true  }
+];
+
+function irPara(id){
+  telaAtual = id;
+  ['painel','produtos','checkout','cobranca','cobrancas','admin-pix','admin-usuarios'].forEach(function(t){
+    $('tela-'+t).classList.toggle('oculto', t!==id);
+  });
+  document.querySelectorAll('#menu button').forEach(function(b){ b.classList.toggle('ativo', b.dataset.ir===id); });
+  render();
+  window.scrollTo(0,0);
+}
+
+function montarMenu(){
+  var ehAdmin = sessao && sessao.papel === 'admin';
+  $('menu').innerHTML = menus.filter(function(m){ return !m.admin || ehAdmin; }).map(function(m){
+    return '<button data-ir="'+m.id+'" class="'+(telaAtual===m.id?'ativo':'')+'">'+m.rotulo+'</button>';
+  }).join('')
+  + '<button id="btn-sair" class="botao botao-suave">Sair</button>';
+
+  document.querySelectorAll('#menu button[data-ir]').forEach(function(b){
+    b.addEventListener('click', function(){ irPara(b.dataset.ir); });
+  });
+  $('btn-sair').addEventListener('click', sair);
+}
+
+/* =================== RENDER =================== */
+function render(){
+  if (!sessao) return;
+  var ehAdmin = sessao.papel === 'admin';
+
+  if (telaAtual === 'painel'){
+    $('painel-saudacao').textContent = 'Ola, ' + sessao.usuario;
+    $('painel-papel').textContent = ehAdmin ? 'conta administrador' : 'conta ativa';
+
+    var confirmadas = vendas.filter(function(v){ return v.status; });
+    var receita = confirmadas.reduce(function(t,v){ return t+v.valor; },0);
+    var m = ehAdmin
+      ? [['U', usuarios.filter(function(u){return u.ativo;}).length, 'Usuarios ativos', 'm-purple'],
+         ['P', produtos.length, 'Produtos', 'm-blue'],
+         ['V', confirmadas.length, 'Vendas confirmadas', 'm-green'],
+         ['R', moeda(receita), 'Receita total', 'm-orange']]
+      : [['P', produtos.length, 'Produtos', 'm-blue'],
+         ['C', 'Ativa', 'Sua conta esta habilitada', 'm-green']];
+
+    $('painel-metricas').innerHTML = m.map(function(x){
+      return '<article class="metrica"><span class="metrica-icone '+x[3]+'">'+x[0]+'</span><div><strong>'+x[1]+'</strong><small>'+x[2]+'</small></div></article>';
+    }).join('');
+
+    if (ehAdmin){
+      $('tabela-vendas').innerHTML =
+        '<thead><tr><th>ID</th><th>Usuario Discord</th><th>Itens</th><th>Valor</th><th>Status</th></tr></thead><tbody>'
+        + vendas.map(function(v){
+            return '<tr><td>#'+v.id+'</td><td>'+v.user+'</td><td>'+v.itens+'</td><td>'+moeda(v.valor)+'</td>'
+            + '<td><span class="badge '+(v.status?'badge-ok':'badge-alerta')+'">'+(v.status?'Confirmado':'Pendente')+'</span></td></tr>';
+          }).join('')
+        + '</tbody>';
+    } else {
+      $('tabela-vendas').innerHTML = '<tbody><tr><td class="vazio">Vendas sao visiveis apenas para administradores.</td></tr></tbody>';
+    }
+
+    var atalhos = ehAdmin
+      ? [['Produtos','Precos e estoque','produtos'],['Vendas','Historico','painel'],['Cobranças','PIX','cobrancas'],['Usuarios','Permissoes','admin-usuarios']]
+      : [['Produtos','Precos e estoque','produtos'],['Checkout','Pagar com PIX','checkout']];
+    $('atalhos').innerHTML = atalhos.map(function(a){
+      return '<button data-ir="'+a[2]+'"><span>'+a[0]+'</span><small>'+a[1]+'</small></button>';
+    }).join('');
+    document.querySelectorAll('#atalhos button').forEach(function(b){ b.addEventListener('click',function(){ irPara(b.dataset.ir); }); });
+  }
+
+  if (telaAtual === 'produtos'){
+    $('tabela-produtos').innerHTML =
+      '<thead><tr><th>ID</th><th>Nome</th><th>Preco</th><th>Estoque</th></tr></thead><tbody>'
+      + produtos.map(function(p){
+          var pr = preco(p.valor, ehAdmin);
+          return '<tr><td>#'+p.id+'</td><td class="forte">'+esc(p.nome)+'</td>'
+            + '<td class="preco-riscado">'+moeda(pr.original)+'</td>'
+            + '<td><span class="badge '+(p.quantidade>0?'badge-ok':'badge-erro')+'">'+p.quantidade+'</span></td></tr>';
+        }).join('')
+      + '</tbody>';
+  }
+
+  if (telaAtual === 'checkout'){
+    var temDesconto = config.descontoAtivo && (!ehAdmin || !config.adminPagaValorCheio);
+    $('checkout-selo').textContent = 'Desconto ' + config.descontoPercentual + '%';
+    $('checkout-aviso').innerHTML = !config.chavePix
+      ? '<div class="alerta alerta-erro">O administrador ainda nao configurou a chave PIX.</div>'
+      : (ehAdmin
+        ? '<div class="alerta alerta-alerta">Voce e administrador: paga o valor cheio (o desconto fica com voce).</div>'
+        : (temDesconto ? '<div class="alerta alerta-ok">Desconto de '+config.descontoPercentual+'% aplicado automaticamente.</div>' : ''));
+
+    $('tabela-checkout').innerHTML =
+      '<thead><tr><th></th><th>Produto</th><th>Preco</th>'+(temDesconto?'<th>Voce paga</th><th>Economia</th>':'')+'</tr></thead><tbody>'
+      + produtos.filter(function(p){ return p.quantidade>0; }).map(function(p){
+          var pr = preco(p.valor, ehAdmin);
+          return '<tr><td><input type="checkbox" name="prod" value="'+p.id+'" aria-label="'+esc(p.nome)+'"></td>'
+            + '<td class="forte">'+esc(p.nome)+'</td>'
+            + '<td class="preco-riscado">'+moeda(pr.original)+'</td>'
+            + (temDesconto ? '<td class="forte preco-final">'+moeda(pr.final)+'</td><td><span class="badge badge-ok">-'+moeda(pr.desconto)+'</span></td>' : '')
+            + '</tr>';
+        }).join('')
+      + '</tbody>';
+  }
+
+  if (telaAtual === 'cobrancas'){
+    $('tabela-cobrancas').innerHTML =
+      '<thead><tr><th>#</th><th>Usuario</th><th>Itens</th><th>Desconto</th><th>Total</th><th>Status</th></tr></thead><tbody>'
+      + (cobrancas.length ? cobrancas.map(function(c){
+          var cls = c.status==='confirmado'?'badge-ok':(c.status==='cancelado'?'badge-erro':'badge-alerta');
+          return '<tr><td>#'+c.id+'</td><td class="forte">'+esc(c.usuario)+'</td><td>'+c.itens.length+'</td>'
+            + '<td>'+(c.desconto>0?'-'+moeda(c.desconto):'-')+'</td><td>'+moeda(c.valorFinal)+'</td>'
+            + '<td><span class="badge '+cls+'">'+c.status+'</span></td></tr>';
+        }).join('') : '<tr><td class="vazio" colspan="6">Nenhuma cobranca registrada.</td></tr>')
+      + '</tbody>';
+  }
+
+  if (telaAtual === 'admin-pix'){
+    var conf = cobrancas.filter(function(c){ return c.status==='confirmado'; });
+    $('pix-metricas').innerHTML =
+      '<article class="metrica"><span class="metrica-icone m-orange">P</span><div><strong>'+cobrancas.filter(function(c){return c.status==='pendente';}).length+'</strong><small>Pendentes</small></div></article>'
+      + '<article class="metrica"><span class="metrica-icone m-green">R</span><div><strong>'+moeda(conf.reduce(function(t,c){return t+c.valorFinal;},0))+'</strong><small>Total recebido</small></div></article>'
+      + '<article class="metrica"><span class="metrica-icone m-purple">C</span><div><strong>'+moeda(conf.reduce(function(t,c){return t+c.comissao;},0))+'</strong><small>Sua comissao</small></div></article>';
+
+    $('cfg-chave').value = config.chavePix;
+    $('cfg-nome').value = config.nomeRecebedor;
+    $('cfg-cidade').value = config.cidade;
+    $('cfg-desconto').value = config.descontoPercentual;
+    $('cfg-comissao').value = config.comissaoPercentual;
+    $('cfg-ativo').checked = config.descontoAtivo;
+    $('cfg-admin-cheio').checked = config.adminPagaValorCheio;
+
+    $('tabela-admin-cobrancas').innerHTML =
+      '<thead><tr><th>#</th><th>Usuario</th><th>Total</th><th>Sua taxa</th><th>Status</th><th>Acoes</th></tr></thead><tbody>'
+      + (cobrancas.length ? cobrancas.map(function(c){
+          var cls = c.status==='confirmado'?'badge-ok':(c.status==='cancelado'?'badge-erro':'badge-alerta');
+          return '<tr><td>#'+c.id+'</td><td class="forte">'+esc(c.usuario)+(c.ehAdmin?' <span class="badge badge-admin">admin</span>':'')+'</td>'
+            + '<td>'+moeda(c.valorFinal)+'</td><td>'+moeda(c.comissao)+'</td>'
+            + '<td><span class="badge '+cls+'">'+c.status+'</span></td>'
+            + '<td><div class="acoes">'
+            +   '<button class="botao botao-mini botao-primario" data-confirmar="'+c.id+'" data-status="confirmado">Confirmar</button>'
+            +   '<button class="botao botao-mini botao-perigo" data-confirmar="'+c.id+'" data-status="cancelado">Cancelar</button>'
+            + '</div></td></tr>';
+        }).join('') : '<tr><td class="vazio" colspan="6">Nenhuma cobranca registrada.</td></tr>')
+      + '</tbody>';
+
+    document.querySelectorAll('#tabela-admin-cobrancas button[data-confirmar]').forEach(function(b){
+      b.addEventListener('click', function(){
+        if (!confirm('Alterar o status desta cobranca?')) return;
+        cobrancas.forEach(function(c){ if (c.id === Number(b.dataset.confirmar)) c.status = b.dataset.status; });
+        render();
+      });
+    });
+  }
+
+  if (telaAtual === 'admin-usuarios'){
+    $('tabela-usuarios').innerHTML =
+      '<thead><tr><th>Usuario</th><th>Status</th><th>Permissao</th><th>Acoes</th></tr></thead><tbody>'
+      + usuarios.map(function(u){
+          return '<tr><td class="forte">'+esc(u.usuario)+'</td>'
+            + '<td><span class="badge '+(u.ativo?'badge-ok':'badge-erro')+'">'+(u.ativo?'Ativo':'Inativo')+'</span></td>'
+            + '<td><span class="badge '+(u.papel==='admin'?'badge-admin':'badge-neutro')+'">'+(u.papel==='admin'?'Admin':'Usuario')+'</span></td>'
+            + '<td><button class="botao botao-mini '+(u.ativo?'botao-perigo':'botao-primario')+'" data-alt="'+u.id+'">'+(u.ativo?'Desativar':'Ativar')+'</button></td></tr>';
+        }).join('')
+      + '</tbody>';
+    document.querySelectorAll('#tabela-usuarios button[data-alt]').forEach(function(b){
+      b.addEventListener('click', function(){
+        usuarios.forEach(function(u){ if (u.id===Number(b.dataset.alt)) u.ativo = !u.ativo; });
+        render();
+      });
+    });
+  }
+}
+
+/* =================== ACOES =================== */
+function entrar(usuario){
+  var u = usuarios.find(function(x){ return x.usuario.toLowerCase() === String(usuario).toLowerCase(); });
+  sessao = sessao || { usuario: usuario, papel: u ? u.papel : 'user' };
+  sessao = { usuario: usuario, papel: (usuario.toLowerCase()==='dono') ? 'admin' : (u ? u.papel : 'user') };
+  mostrarApp(true);
+  montarMenu();
+  irPara('painel');
+}
+
+function sair(){ sessao = null; mostrarApp(false); montarMenu(); }
+
+$('form-login').addEventListener('submit', function(e){
+  e.preventDefault();
+  var u = $('login-usuario').value.trim();
+  var s = $('login-senha').value;
+  var erro = $('login-erro');
+  if (!u || s.length < 4){ erro.textContent = 'Informe usuario e senha validos.'; erro.classList.remove('oculto'); return; }
+  erro.classList.add('oculto');
+  entrar(u);
+});
+
+$('form-cadastro').addEventListener('submit', function(e){
+  e.preventDefault();
+  var u = $('cad-usuario').value.trim().toLowerCase();
+  var s = $('cad-senha').value;
+  var erro = $('cad-cadastro-erro') || $('cadastro-erro');
+  if (u.length < 3 || s.length < 6){ erro.textContent = 'Usuario minimo 3 e senha minima 6.'; erro.classList.remove('oculto'); return; }
+  if (usuarios.some(function(x){ return x.usuario === u; })){ erro.textContent = 'Este usuario ja existe.'; erro.classList.remove('oculto'); return; }
+  usuarios.push({ id: Date.now(), usuario: u, papel: 'user', ativo: true });
+  erro.classList.add('oculto');
+  entrar(u);
+});
+
+$('btn-gerar-pix').addEventListener('click', function(){
+  var ehAdmin = sessao.papel === 'admin';
+  var marcados = [].slice.call(document.querySelectorAll('#tabela-checkout input[name=prod]:checked')).map(function(i){ return Number(i.value); });
+  if (!marcados.length){ alert('Selecione ao menos um produto.'); return; }
+
+  var itens = produtos.filter(function(p){ return marcados.indexOf(p.id) !== -1; }).map(function(p){
+    var pr = preco(p.valor, ehAdmin);
+    return { produtoId: p.id, nome: p.nome, valorOriginal: pr.original, valorPago: pr.final };
+  });
+  var original = itens.reduce(function(t,i){ return t+i.valorOriginal; },0);
+  var final = itens.reduce(function(t,i){ return t+i.valorPago; },0);
+  var txid = 'DEMO' + String(Date.now()).slice(-8);
+
+  var c = {
+    id: cobrancas.length + 1, usuario: sessao.usuario, ehAdmin: ehAdmin,
+    itens: itens, valorOriginal: original, desconto: original-final,
+    comissao: original-final, valorFinal: final,
+    status: 'pendente', txid: txid,
+    payload: gerarPayloadPix(config.chavePix || 'chave-pix-exemplo', final, config.nomeRecebedor, config.cidade, txid)
+  };
+  cobrancas.unshift(c);
+
+  $('cobranca-sub').textContent = 'Cobranca #' + c.id;
+  $('cobranca-status').textContent = c.status;
+  $('pix-copia').value = c.payload;
+  $('cobranca-itens').innerHTML = itens.map(function(i){
+    return '<li><span>'+esc(i.nome)+'</span><strong>'+moeda(i.valorPago)+'</strong></li>';
+  }).join('');
+  $('cobranca-resumo').innerHTML =
+      '<div><span>Subtotal</span><span>'+moeda(c.valorOriginal)+'</span></div>'
+    + (c.desconto>0?'<div class="desconto"><span>Desconto</span><span>-'+moeda(c.desconto)+'</span></div>':'')
+    + '<div class="total"><span>Total no PIX</span><span>'+moeda(c.valorFinal)+'</span></div>';
+
+  irPara('cobranca');
+});
+
+$('copiar-pix').addEventListener('click', function(){
+  var ta = $('pix-copia');
+  ta.select();
+  try { document.execCommand('copy'); this.textContent = 'Copiado!'; } catch(e){ this.textContent = 'Selecione e copie'; }
+  var b = this; setTimeout(function(){ b.textContent = 'Copiar codigo PIX'; }, 1500);
+});
+
+$('salvar-cfg').addEventListener('click', function(){
+  config.chavePix = $('cfg-chave').value.trim();
+  config.nomeRecebedor = $('cfg-nome').value.trim().toUpperCase();
+  config.cidade = $('cfg-cidade').value.trim().toUpperCase();
+  config.descontoPercentual = Number($('cfg-desconto').value) || 0;
+  config.comissaoPercentual = Number($('cfg-comissao').value) || 0;
+  config.descontoAtivo = $('cfg-ativo').checked;
+  config.adminPagaValorCheio = $('cfg-admin-cheio').checked;
+  render();
+  alert('Configuracao PIX salva (nesta demonstracao).');
+});
+
+$('ir-cadastro').addEventListener('click', function(e){ e.preventDefault(); mostrar('tela-cadastro'); });
+$('ir-login').addEventListener('click', function(e){ e.preventDefault(); mostrar('tela-login'); });
+
+document.querySelectorAll('.ver-senha').forEach(function(b){
+  b.addEventListener('click', function(){
+    var campo = $(b.dataset.alvo);
+    var mostrar = campo.type === 'password';
+    campo.type = mostrar ? 'text' : 'password';
+    b.textContent = mostrar ? 'ocultar' : 'ver';
+  });
+});
+
+document.querySelectorAll('[data-ir]').forEach(function(b){
+  if (b.tagName === 'BUTTON' && !b.dataset.ir.match(/painel|produtos|checkout|cobrancas|admin/)) return;
+  b.addEventListener('click', function(){ irPara(b.dataset.ir); });
+});
+
+mostrar('tela-login');
+</script>
+</body>
+</html>

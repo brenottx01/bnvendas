@@ -1,0 +1,6 @@
+<% if (flash && flash.erro) { %>
+    <div class="alerta alerta-erro" role="alert"><%= flash.erro %></div>
+<% } %>
+<% if (flash && flash.sucesso) { %>
+    <div class="alerta alerta-ok" role="status"><%= flash.sucesso %></div>
+<% } %>

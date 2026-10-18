@@ -1,0 +1,112 @@
+<%- include('partials/cabecalho') %>
+
+<div class="cabecalho-pagina">
+    <div><h1>Pagamentos PIX</h1><p>Sua chave, comissao e confirmacao de recebimento.</p></div>
+    <a class="botao botao-suave" href="/admin">Voltar</a>
+</div>
+
+<section class="grade-metricas">
+    <article class="metrica">
+        <span class="metrica-icone orange">P</span>
+        <div><strong><%= resumo.pendentes %></strong><small>Cobrancas pendentes</small></div>
+    </article>
+    <article class="metrica">
+        <span class="metrica-icone green">R</span>
+        <div><strong><%= formatarMoeda(resumo.totalConfirmado) %></strong><small>Total recebido</small></div>
+    </article>
+    <article class="metrica">
+        <span class="metrica-icone purple">C</span>
+        <div><strong><%= formatarMoeda(resumo.totalComissao) %></strong><small>Sua comissao</small></div>
+    </article>
+</section>
+
+<section class="painel">
+    <h2>Sua chave PIX</h2>
+    <p class="ajuda">Somente voce (admin) ve e altera esta area. A chave nunca aparece para os usuarios, apenas o QR Code gerado.</p>
+
+    <form method="post" action="/admin/pagamentos/config" class="formulario-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <div class="grade-campos">
+            <div>
+                <label for="chavePix">Chave PIX</label>
+                <input id="chavePix" name="chavePix" type="text" maxlength="140"
+                       placeholder="CPF/CNPJ, e-mail, telefone ou chave aleatoria"
+                       value="<%= config.chavePix %>">
+            </div>
+            <div>
+                <label for="nomeRecebedor">Nome do recebedor</label>
+                <input id="nomeRecebedor" name="nomeRecebedor" type="text" maxlength="25"
+                       placeholder="SEU NOME" value="<%= config.nomeRecebedor %>">
+            </div>
+            <div>
+                <label for="cidade">Cidade</label>
+                <input id="cidade" name="cidade" type="text" maxlength="15"
+                       placeholder="SAO PAULO" value="<%= config.cidade %>">
+            </div>
+            <div>
+                <label for="descontoPercentual">Desconto para usuarios (%)</label>
+                <input id="descontoPercentual" name="descontoPercentual" type="number" min="0" max="100" step="0.01"
+                       value="<%= config.descontoPercentual %>">
+            </div>
+            <div>
+                <label for="comissaoPercentual">Sua comissao (%)</label>
+                <input id="comissaoPercentual" name="comissaoPercentual" type="number" min="0" max="100" step="0.01"
+                       value="<%= config.comissaoPercentual %>">
+            </div>
+        </div>
+
+        <div class="grade-checks">
+            <label class="check"><input type="checkbox" name="descontoAtivo" <%= config.descontoAtivo ? 'checked' : '' %>> Desconto ativo</label>
+            <label class="check"><input type="checkbox" name="adminPagaValorCheio" <%= config.adminPagaValorCheio ? 'checked' : '' %>> Admin paga o valor cheio (sem desconto)</label>
+        </div>
+
+        <button type="submit" class="botao botao-primario">Salvar configuracao</button>
+    </form>
+</section>
+
+<section class="painel">
+    <h2>Cobrancas</h2>
+    <% if (cobrancas.length === 0) { %>
+        <p class="vazio">Nenhuma cobranca registrada.</p>
+    <% } else { %>
+        <div class="tabela-envolve">
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Usuario</th><th>Itens</th><th>Total</th><th>Sua taxa</th><th>Status</th><th>Acoes</th></tr>
+                </thead>
+                <tbody>
+                    <% cobrancas.forEach((cobranca) => { %>
+                        <tr>
+                            <td><a href="/cobranca/<%= cobranca._id %>">#<%= cobranca._id %></a></td>
+                            <td class="forte">
+                                <%= cobranca.usuario %>
+                                <% if (cobranca.ehAdmin) { %><span class="badge badge-admin">admin</span><% } %>
+                            </td>
+                            <td><%= cobranca.itens.length %></td>
+                            <td><%= formatarMoeda(cobranca.valorFinal) %></td>
+                            <td><%= formatarMoeda(cobranca.comissao) %></td>
+                            <td><span class="badge <%= cobranca.status === 'confirmado' ? 'badge-ok' : (cobranca.status === 'cancelado' ? 'badge-erro' : 'badge-alerta') %>"><%= cobranca.status %></span></td>
+                            <td>
+                                <div class="acoes">
+                                    <form method="post" action="/admin/cobranca/<%= cobranca._id %>/status" data-confirmar="Confirmar o recebimento deste PIX?">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                        <input type="hidden" name="status" value="confirmado">
+                                        <button type="submit" class="botao botao-mini botao-primario">Confirmar</button>
+                                    </form>
+                                    <form method="post" action="/admin/cobranca/<%= cobranca._id %>/status" data-confirmar="Cancelar esta cobranca?">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                        <input type="hidden" name="status" value="cancelado">
+                                        <button type="submit" class="botao botao-mini botao-perigo">Cancelar</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</section>
+
+<%- include('partials/rodape') %>

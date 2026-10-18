@@ -1,0 +1,32 @@
+<%- include('partials/cabecalho') %>
+
+<div class="cabecalho-pagina">
+    <div><h1>Vendas</h1><p>Pagamentos gerados pelo bot.</p></div>
+    <span class="selo"><%= vendas.length %> exibidas</span>
+</div>
+
+<section class="painel">
+    <% if (vendas.length === 0) { %>
+        <p class="vazio">Nenhuma venda registrada.</p>
+    <% } else { %>
+        <div class="tabela-envolve">
+            <table>
+                <thead><tr><th>ID</th><th>Cliente Discord</th><th>Itens</th><th>Valor</th><th>Data</th><th>Status</th></tr></thead>
+                <tbody>
+                    <% vendas.forEach((venda) => { %>
+                        <tr>
+                            <td>#<%= venda._id %></td>
+                            <td><%= venda.user_id %></td>
+                            <td><%= venda.quantidade_produtos_vendidos %></td>
+                            <td><%= formatarMoeda(venda.valor) %></td>
+                            <td><%= formatarData(venda.data) %></td>
+                            <td><span class="badge <%= venda.pagamento_confirmado ? 'badge-ok' : 'badge-alerta' %>"><%= venda.pagamento_confirmado ? 'Confirmado' : 'Pendente' %></span></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</section>
+
+<%- include('partials/rodape') %>

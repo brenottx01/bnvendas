@@ -1,0 +1,31 @@
+<%- include('partials/cabecalho') %>
+
+<div class="cabecalho-pagina">
+    <div><h1>Produtos</h1><p>Produtos cadastrados pelo bot no Discord.</p></div>
+    <span class="selo"><%= produtos.length %> exibidos</span>
+</div>
+
+<section class="painel">
+    <% if (produtos.length === 0) { %>
+        <p class="vazio">Nenhum produto cadastrado.</p>
+    <% } else { %>
+        <div class="tabela-envolve">
+            <table>
+                <thead><tr><th>ID</th><th>Nome</th><th>Servidor</th><th>Valor</th><th>Estoque</th></tr></thead>
+                <tbody>
+                    <% produtos.forEach((produto) => { %>
+                        <tr>
+                            <td>#<%= produto._id %></td>
+                            <td class="forte"><%= produto.nome %></td>
+                            <td><%= produto.server_id %></td>
+                            <td><%= formatarMoeda(produto.valor) %></td>
+                            <td><span class="badge <%= produto.quantidade > 0 ? 'badge-ok' : 'badge-erro' %>"><%= produto.quantidade %></span></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</section>
+
+<%- include('partials/rodape') %>

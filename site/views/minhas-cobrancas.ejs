@@ -1,0 +1,36 @@
+<%- include('partials/cabecalho') %>
+
+<div class="cabecalho-pagina">
+    <div><h1>Minhas cobrancas</h1><p>Historico de pagamentos PIX.</p></div>
+    <a class="botao botao-primario" href="/checkout">Nova compra</a>
+</div>
+
+<section class="painel">
+    <% if (cobrancas.length === 0) { %>
+        <p class="vazio">Nenhuma cobranca registrada.</p>
+    <% } else { %>
+        <div class="tabela-envolve">
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Usuario</th><th>Itens</th><th>Desconto</th><th>Total</th><th>Status</th><th>Data</th><th></th></tr>
+                </thead>
+                <tbody>
+                    <% cobrancas.forEach((cobranca) => { %>
+                        <tr>
+                            <td>#<%= cobranca._id %></td>
+                            <td class="forte"><%= cobranca.usuario %></td>
+                            <td><%= cobranca.itens.length %></td>
+                            <td><%= cobranca.desconto > 0 ? ('-' + formatarMoeda(cobranca.desconto)) : '-' %></td>
+                            <td><%= formatarMoeda(cobranca.valorFinal) %></td>
+                            <td><span class="badge <%= cobranca.status === 'confirmado' ? 'badge-ok' : (cobranca.status === 'cancelado' ? 'badge-erro' : 'badge-alerta') %>"><%= cobranca.status %></span></td>
+                            <td><%= formatarData(cobranca.criadoEm) %></td>
+                            <td><a href="/cobranca/<%= cobranca._id %>">ver</a></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</section>
+
+<%- include('partials/rodape') %>

@@ -1,0 +1,39 @@
+<%- include('partials/cabecalho') %>
+
+<section class="cartao-auth">
+    <div class="logo-grande">V</div>
+    <h1>Criar conta</h1>
+    <p class="subtitulo">Seu cadastro tera acesso ao painel de vendas.</p>
+
+    <% if (typeof erro !== 'undefined' && erro) { %>
+        <div class="alerta alerta-erro"><%= erro %></div>
+    <% } %>
+
+    <form method="post" action="/registrar" class="formulario" autocomplete="on">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <label for="usuario">Usuario</label>
+        <input id="usuario" name="usuario" type="text" required minlength="3" maxlength="32"
+               pattern="[A-Za-z0-9._\-]{3,32}" autocomplete="username" placeholder="seu.usuario"
+               value="<%= typeof valores !== 'undefined' && valores.usuario ? valores.usuario : '' %>">
+        <small class="ajuda">Use letras, numeros, ponto, hifen ou underscore.</small>
+
+        <label for="senha">Senha</label>
+        <div class="campo-senha">
+            <input id="senha" name="senha" type="password" required minlength="8" autocomplete="new-password" placeholder="Minimo de 8 caracteres">
+            <button type="button" class="ver-senha" data-alvo="senha" aria-label="Mostrar senha">ver</button>
+        </div>
+
+        <label for="confirmarSenha">Confirmar senha</label>
+        <div class="campo-senha">
+            <input id="confirmarSenha" name="confirmarSenha" type="password" required minlength="8" autocomplete="new-password" placeholder="Repita a senha">
+            <button type="button" class="ver-senha" data-alvo="confirmarSenha" aria-label="Mostrar senha">ver</button>
+        </div>
+
+        <button type="submit" class="botao botao-primario botao-largo">Criar conta</button>
+    </form>
+
+    <p class="alternativa">Ja tem conta? <a href="/entrar">Entrar</a></p>
+</section>
+
+<%- include('partials/rodape') %>

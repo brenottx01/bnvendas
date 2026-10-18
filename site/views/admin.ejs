@@ -1,0 +1,56 @@
+<%- include('partials/cabecalho') %>
+
+<div class="cabecalho-pagina">
+    <div><h1>Administracao</h1><p>Controle de acesso e contas do painel.</p></div>
+    <a class="botao botao-primario" href="/admin/usuarios">Gerenciar usuarios</a>
+</div>
+
+<section class="grade-metricas">
+    <article class="metrica">
+        <span class="metrica-icone purple">U</span>
+        <div><strong><%= metricas.totalUsuarios %></strong><small>Total de usuarios</small></div>
+    </article>
+    <article class="metrica">
+        <span class="metrica-icone green">A</span>
+        <div><strong><%= metricas.admins %></strong><small>Administradores ativos</small></div>
+    </article>
+    <article class="metrica">
+        <span class="metrica-icone red">B</span>
+        <div><strong><%= metricas.inativos %></strong><small>Contas desativadas</small></div>
+    </article>
+</section>
+
+<section class="painel">
+    <div class="painel-topo">
+        <h2>Cadastros recentes</h2>
+        <a href="/admin/usuarios">Ver todos</a>
+    </div>
+    <div class="tabela-envolve">
+        <table>
+            <thead><tr><th>Usuario</th><th>Papel</th><th>Status</th><th>Criado em</th><th>Ultimo acesso</th></tr></thead>
+            <tbody>
+                <% usuariosRecentes.forEach((item) => { %>
+                    <tr>
+                        <td class="forte"><%= item.usuario %></td>
+                        <td><span class="badge <%= item.papel === 'admin' ? 'badge-admin' : 'badge-neutro' %>"><%= item.papel === 'admin' ? 'Admin' : 'Usuario' %></span></td>
+                        <td><span class="badge <%= item.ativo ? 'badge-ok' : 'badge-erro' %>"><%= item.ativo ? 'Ativo' : 'Inativo' %></span></td>
+                        <td><%= formatarData(item.criadoEm) %></td>
+                        <td><%= formatarData(item.ultimoLogin) %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="painel">
+    <h2>Seguranca</h2>
+    <ul class="lista-orientacao">
+        <li>Senhas nunca aparecem no painel e sao armazenadas com hash bcrypt.</li>
+        <li>Desconfie de senhas enviadas por Discord, WhatsApp ou e-mail.</li>
+        <li>Use HTTPS em producao e troque o segredo de sessao periodicamente.</li>
+        <li>Mantenha pelo menos um administrador ativo.</li>
+    </ul>
+</section>
+
+<%- include('partials/rodape') %>

@@ -1,0 +1,31 @@
+<%- include('partials/cabecalho') %>
+
+<div class="cabecalho-pagina">
+    <div><h1>Carrinhos</h1><p>Carrinhos ativos registrados pelo bot.</p></div>
+    <span class="selo"><%= carrinhos.length %> exibidos</span>
+</div>
+
+<section class="painel">
+    <% if (carrinhos.length === 0) { %>
+        <p class="vazio">Nenhum carrinho aberto.</p>
+    <% } else { %>
+        <div class="tabela-envolve">
+            <table>
+                <thead><tr><th>Cliente Discord</th><th>Servidor</th><th>Itens</th><th>Total</th><th>Status</th></tr></thead>
+                <tbody>
+                    <% carrinhos.forEach((carrinho) => { %>
+                        <tr>
+                            <td><%= carrinho.user_id %></td>
+                            <td><%= carrinho.server_id %></td>
+                            <td><%= carrinho.produtos.length %></td>
+                            <td><%= formatarMoeda(carrinho.produtos.reduce((total, item) => total + (Number(item.produto_valor) || 0), 0)) %></td>
+                            <td><span class="badge badge-alerta"><%= carrinho.msg_carrinho_status %></span></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</section>
+
+<%- include('partials/rodape') %>

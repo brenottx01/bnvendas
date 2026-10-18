@@ -1,0 +1,32 @@
+<%- include('partials/cabecalho') %>
+
+<section class="cartao-auth">
+    <div class="logo-grande">V</div>
+    <h1>Entrar na sua conta</h1>
+    <p class="subtitulo">Acesse produtos, vendas e o painel administrativo.</p>
+
+    <% if (typeof erro !== 'undefined' && erro) { %>
+        <div class="alerta alerta-erro"><%= erro %></div>
+    <% } %>
+
+    <form method="post" action="/entrar" class="formulario" autocomplete="on">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <label for="usuario">Usuario</label>
+        <input id="usuario" name="usuario" type="text" required minlength="3" maxlength="32"
+               autocomplete="username" placeholder="seu.usuario"
+               value="<%= typeof valores !== 'undefined' && valores.usuario ? valores.usuario : '' %>">
+
+        <label for="senha">Senha</label>
+        <div class="campo-senha">
+            <input id="senha" name="senha" type="password" required autocomplete="current-password" placeholder="Sua senha">
+            <button type="button" class="ver-senha" data-alvo="senha" aria-label="Mostrar senha">ver</button>
+        </div>
+
+        <button type="submit" class="botao botao-primario botao-largo">Entrar</button>
+    </form>
+
+    <p class="alternativa">Nao tem conta? <a href="/registrar">Criar conta</a></p>
+</section>
+
+<%- include('partials/rodape') %>

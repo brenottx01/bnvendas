@@ -1,0 +1,25 @@
+<%- include('partials/cabecalho') %>
+
+<section class="cartao-auth">
+    <h1>Redefinir senha</h1>
+    <p class="subtitulo">Conta: <strong><%= usuarioAlvo.usuario %></strong></p>
+
+    <form method="post" action="/admin/usuarios/<%= usuarioAlvo._id %>/senha" class="formulario">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <label for="senha">Nova senha</label>
+        <div class="campo-senha">
+            <input id="senha" name="senha" type="password" required minlength="8" autocomplete="new-password">
+            <button type="button" class="ver-senha" data-alvo="senha">ver</button>
+        </div>
+
+        <label for="confirmarSenha">Confirmar nova senha</label>
+        <input id="confirmarSenha" name="confirmarSenha" type="password" required minlength="8" autocomplete="new-password">
+
+        <button type="submit" class="botao botao-primario botao-largo">Redefinir senha</button>
+    </form>
+
+    <p class="alternativa"><a href="/admin/usuarios">Voltar para usuarios</a></p>
+</section>
+
+<%- include('partials/rodape') %>

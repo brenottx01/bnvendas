@@ -1,0 +1,66 @@
+<%- include('partials/cabecalho') %>
+
+<div class="cabecalho-pagina">
+    <div>
+        <h1>Checkout PIX</h1>
+        <p>Selecione os produtos e gere o pagamento.</p>
+    </div>
+    <span class="selo">Desconto <%= config.descontoPercentual %>%</span>
+</div>
+
+<% if (!config.chavePix) { %>
+    <div class="alerta alerta-erro">O administrador ainda nao configurou a chave PIX. Avise o dono do site.</div>
+<% } %>
+
+<% if (ehAdmin) { %>
+    <div class="alerta alerta-alerta">
+        Voce esta logado como administrador, por isso paga o valor cheio
+        (o desconto de <%= config.descontoPercentual %>% fica com voce como comissao).
+    </div>
+<% } else if (temDesconto) { %>
+    <div class="alerta alerta-ok">
+        Desconto de <%= config.descontoPercentual %>% aplicado automaticamente em todos os produtos.
+    </div>
+<% } %>
+
+<section class="painel">
+    <form method="post" action="/checkout/gerar">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <% if (itens.length === 0) { %>
+            <p class="vazio">Nenhum produto com estoque disponivel.</p>
+        <% } else { %>
+            <div class="tabela-envolve">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Produto</th>
+                            <th>Preco</th>
+                            <% if (temDesconto) { %><th>Voce paga</th><th>Economia</th><% } %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% itens.forEach((item) => { %>
+                            <tr>
+                                <td><input type="checkbox" name="produtos" value="<%= item._id %>" aria-label="Selecionar <%= item.nome %>"></td>
+                                <td class="forte"><%= item.nome %></td>
+                                <td class="preco-riscado"><%= formatarMoeda(item.preco.valorOriginal) %></td>
+                                <% if (temDesconto) { %>
+                                    <td class="forte preco-final"><%= formatarMoeda(item.preco.valorFinal) %></td>
+                                    <td><span class="badge badge-ok">-<%= formatarMoeda(item.preco.desconto) %></span></td>
+                                <% } %>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <button type="submit" class="botao botao-primario" style="margin-top:16px">
+                Gerar PIX
+            </button>
+        <% } %>
+    </form>
+</section>
+
+<%- include('partials/rodape') %>
